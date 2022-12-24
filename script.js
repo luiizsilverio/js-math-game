@@ -19,9 +19,9 @@ const penaltyTimeEl = document.querySelector('.penalty-time');
 const playAgainBtn = document.querySelector('.play-again');
 
 // Equations
-
 let questionAmount = 0;
 let equationsArray = [];
+let playerGuessArray = [];
 
 // Game Page
 let firstNumber = 0;
@@ -30,8 +30,56 @@ let equationObject = {};
 const wrongFormat = [];
 
 // Time
+let timer;
+let timePlayed = 0;
+let baseTime = 0;
+let penaltyTime = 0;
+let finalTime = 0;
+let finalTimeDisplay = '0.0s';
 
 // Scroll
+let valueY = 0;
+
+// Stop Timer, process results, go to Score Page
+function checkTime() {
+  if (playerGuessArray.length === questionAmount) {
+    console.log(playerGuessArray);
+    clearInterval(timer);
+    // check for wrong guesses, add penalty time
+    equationsArray.forEach((equation, index) => {
+      if (equation.evaluated === playerGuessArray[index]) {
+        // correct guess, no penalty
+      } else {
+        // incorrect guess, add penalty
+        penaltyTime += 0.5;
+      }
+    })
+    finalTime = timePlayed + penaltyTime;
+  }
+}
+
+// Add a 1/10 of a second to timePlayed
+function addTime() {
+  timePlayed += 0.1;
+  checkTime();
+}
+
+// Start timer when game page is clicked
+function startTimer() {
+  timePlayed = 0;
+  penaltyTime = 0;
+  finalTime = 0;
+  timer = setInterval(addTime, 100);
+  gamePage.removeEventListener('click', startTimer);
+}
+
+// Scroll, Store user selection in playerGuessArray
+function select(guessedTrue) {
+  // scroll vertically 80 px
+  valueY += 80;
+  itemContainer.scroll(0, valueY);
+  return playerGuessArray.push( guessedTrue ? 'true' : 'false' );
+}
 
 function showGamePage() {
   gamePage.hidden = false;
@@ -144,7 +192,6 @@ function showCountdown() {
 function selectQuestionAmount(e) {
   e.preventDefault();
   questionAmount = getRadioValue();
-  console.log(questionAmount)
   if (questionAmount) showCountdown();
 }
 
@@ -158,4 +205,4 @@ startForm.addEventListener('click', () => {
 })
 
 startForm.addEventListener('submit', selectQuestionAmount);
-
+gamePage.addEventListener('click', startTimer);
