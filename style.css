@@ -248,12 +248,13 @@ button:active {
 }
 
 .base-time {
-  margin-top: 100px;
+  margin-top: 50px;
   margin-bottom: 0;
 }
 
 .penalty-time {
   color: var(--danger);
+  margin-bottom: 80px;
 }
 
 /* Media Query: Laptop */
